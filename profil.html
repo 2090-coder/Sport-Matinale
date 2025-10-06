@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Logo Sport Matinale</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ff6b6b, #feca57, #1dd1a1, #48dbfb, #5f27cd);
+    background-size: 400% 400%;
+    animation: moveGradient 8s ease infinite;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  @keyframes moveGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .logo {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 40px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    border: 3px solid rgba(255,255,255,0.4);
+  }
+
+  .logo h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 0;
+    background: linear-gradient(90deg, #fff, #ffe259, #ff6b6b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .logo h2 {
+    font-size: 14px;
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+    opacity: 0.9;
+  }
+
+  .logo::before {
+    content: '';
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(rgba(255,255,255,0.1), transparent 70%);
+    z-index: -1;
+  }
+</style>
+</head>
+<body>
+  <div class="logo">
+    <h1>Sport Matinale</h1>
+    <h2>Jeunes de Goma, soyez en bonne santé 💪☀️</h2>
+  </div>
+</body>
+</html>

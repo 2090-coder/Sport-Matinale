@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChatBENGZ - Sport Matinale</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.chatbox {
+  height: 400px;
+  overflow-y: auto;
+  background: #1a1a1a;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.message {
+  margin: 6px 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+.user { background: #c0392b; text-align: right; }
+.bot { background: #333; text-align: left; }
+input { width: 80%; padding: 10px; border-radius: 8px; border: none; }
+button { padding: 10px 18px; border-radius: 8px; background: #c0392b; border:none; color:white; font-weight:600; cursor:pointer; transition:0.3s;}
+button:hover { background:#e74c3c;}
+</style>
+</head>
+<body>
+<header>
+  <h1>ChatBENGZ 🤖</h1>
+  <nav>
+    <a href="index.html">Accueil</a>
+    <a href="discipline.html">Discipline</a>
+    <a href="sante.html">Santé</a>
+    <a href="force.html">Force / Programme</a>
+    <a href="membres.html">Membres</a>
+    <a href="annonces.html">Annonces</a>
+    <a href="progression.html">Progression</a>
+    <a href="chatbengz.html">ChatBENGZ</a>
+  </nav>
+</header>
+
+<div class="container">
+<nav>
+  <img src="chatBENGZ.jpg" alt="ChatBENGZ" style="width:80px; border-radius:50%; display:block; margin:0 auto 10px;">
+  <h3><strong>ChatBENGZ</strong></h3>
+  </nav>
+  <div class="chatbox" id="chat"></div>
+  <input id="msg" placeholder="Écris ici..." onkeydown="if(event.key==='Enter')send()">
+  <button onclick="send()">Envoyer</button>
+</div>
+
+<script>
+// -----------------------------
+// ChatBENGZ – 500+ réponses
+// -----------------------------
+
+const responses = [
+
+/*  { keywords:["Salut","salut","bonjour","Bonjour","Comment ça va","Bonsoir","bonsoir","Çv","ChatBengz","ChatBENGZ"],
+    reply:[
+      "Salut c'est ChatBENGZ ici, comment puis-je vous aider?",
+      "Une routine bien respectée transforme la motivation en résultats.",
+      "Respecte ton programme même quand tu n'en as pas envie.",
+      "Petit effort quotidien = grand résultat sur le long terme.",
+      "Commence tôt et reste concentré sur tes objectifs.",
+      "Chaque matin rappelle-toi pourquoi tu as commencé.",
+      "Persévère chaque jour, même sans motivation.",
+      "La rigueur forge le caractère et la force.",
+      "Reste fidèle à ton agenda et à tes habitudes.",
+      "Concentre-toi sur ce que tu peux contrôler aujourd'hui.",
+      "Planifie ton succès avant qu’il n’arrive.",
+      "Chaque effort discipliné compte pour ton futur.",
+      "La constance dépasse le talent sans discipline.",
+      "Ne reporte pas, agis maintenant.",
+      "Le succès appartient aux organisés.",
+      "Le plus difficile est de commencer, ensuite ça devient habituel.",
+      "Chaque matin est une chance de renforcer tes habitudes.",
+      "Répète tes routines jusqu’à ce qu’elles deviennent automatiques.",
+      "Une discipline flexible est meilleure qu’aucune discipline.",
+      "Garde ton objectif visible chaque jour pour rester motivé."
+    ]
+  },*/
+
+  { keywords:["bonjour","salut","hello","hi","hé","coucou","hey","yo"], 
+    answer:"Salut ! Je suis ChatBENGZ 🤖. Comment ça va aujourd'hui ? Prêt pour apprendre et discuter avec le groupe 'Sport Matinale'?" },
+  { keywords:["bonsoir","bonne soirée","bonne nuit"], 
+    answer:"Bonsoir ! 🌙 ChatBENGZ ici. J'espère que tu as passé une bonne journée. Que veux-tu apprendre ou demander ce soir ?" },
+  { keywords:["ça va","quoi de neuf","comment ça va"], 
+    answer:"Ça va super 😎 ! ChatBENGZ est prêt à répondre à toutes tes questions. Et toi, comment ça va ?" },
+  { keywords:["merci","thank","merci beaucoup","thx"], 
+    answer:"Avec plaisir ! ChatBENGZ est toujours là pour t'aider 😊." },
+  { keywords:["bravo","félicitations","bien joué"], 
+    answer:"Merci ! ChatBENGZ t'encourage à continuer comme ça 👏." },
+  { keywords:["hey chat","bonjour chatbengz","bnjr","bnj","Çv","ChatBengz","ChatBENGZ"], 
+    reply:["Salut ! C'est ChatBENGZ 🤖. Pose ta question et je t'aiderai du mieux possible.",
+    "Salut c'est ChatBENGZ ici, comment puis-je vous aider?"
+      "Une routine bien respectée transforme la motivation en résultats.",
+      "Respecte ton programme même quand tu n'en as pas envie.",
+      "Petit effort quotidien = grand résultat sur le long terme.",
+      "Commence tôt et reste concentré sur tes objectifs.",
+      "Chaque matin rappelle-toi pourquoi tu as commencé.",
+      "Persévère chaque jour, même sans motivation.",
+      "La rigueur forge le caractère et la force.",
+      "Reste fidèle à ton agenda et à tes habitudes.",
+      "Concentre-toi sur ce que tu peux contrôler aujourd'hui."
+      "Planifie ton succès avant qu’il n’arrive.",
+      "Chaque effort discipliné compte pour ton futur.",
+      "La constance dépasse le talent sans discipline.",
+      "Ne reporte pas, agis maintenant.",
+      "Le succès appartient aux organisés.",
+      "Le plus difficile est de commencer, ensuite ça devient habituel.",
+      "Chaque matin est une chance de renforcer tes habitudes.",
+      "Répète tes routines jusqu’à ce qu’elles deviennent automatiques.",
+      "Une discipline flexible est meilleure qu’aucune discipline.",
+      "Garde ton objectif visible chaque jour pour rester motivé."]
+      },
+
+  // --- Discipline ---
+  { keywords:["discipline","routine","habitude","organisation","planification","ponctualité","assiduité","régularité","persévérance","objectif"],
+    reply:[
+      "La discipline est la clé de tout progrès durable.",
+      "Une routine bien respectée transforme la motivation en résultats.",
+      "Respecte ton programme même quand tu n'en as pas envie.",
+      "Petit effort quotidien = grand résultat sur le long terme.",
+      "Commence tôt et reste concentré sur tes objectifs.",
+      "Chaque matin rappelle-toi pourquoi tu as commencé.",
+      "Persévère chaque jour, même sans motivation.",
+      "La rigueur forge le caractère et la force.",
+      "Reste fidèle à ton agenda et à tes habitudes.",
+      "Concentre-toi sur ce que tu peux contrôler aujourd'hui.",
+      "Planifie ton succès avant qu’il n’arrive.",
+      "Chaque effort discipliné compte pour ton futur.",
+      "La constance dépasse le talent sans discipline.",
+      "Ne reporte pas, agis maintenant.",
+      "Le succès appartient aux organisés.",
+      "Le plus difficile est de commencer, ensuite ça devient habituel.",
+      "Chaque matin est une chance de renforcer tes habitudes.",
+      "Répète tes routines jusqu’à ce qu’elles deviennent automatiques.",
+      "Une discipline flexible est meilleure qu’aucune discipline.",
+      "Garde ton objectif visible chaque jour pour rester motivé."
+    ]
+  },
+
+  // --- Santé & Nutrition ---
+  { keywords:["santé","nutrition","manger","eau","repos","dormir","alimentation","vitamine","fibres","protéine"],
+    reply:[
+      "Bois beaucoup d'eau et mange équilibré pour soutenir ton corps.",
+      "Le repos est essentiel pour la récupération et la performance.",
+      "Chaque repas est une opportunité de nourrir ton corps.",
+      "Mange varié pour obtenir toutes les vitamines et minéraux.",
+      "Hydrate-toi avant, pendant et après l'effort.",
+      "Le sommeil est ton meilleur allié pour la santé et la force.",
+      "Évite le stress excessif et pratique la relaxation.",
+      "Les fibres aident à une digestion optimale.",
+      "Une alimentation riche en protéines soutient la musculation.",
+      "Respecte tes repas et ne saute jamais le petit-déjeuner.",
+      "Évite les aliments ultra-transformés pour rester énergique.",
+      "Les fruits et légumes colorés fournissent des antioxydants puissants.",
+      "Planifie tes repas pour rester constant.",
+      "Une alimentation saine améliore la concentration.",
+      "Ne néglige pas le petit-déjeuner, il lance ton métabolisme.",
+      "Les collations saines aident à maintenir l’énergie toute la journée.",
+      "Équilibre glucides, protéines et lipides pour un corps optimal.",
+      "Les bonnes habitudes alimentaires sont la base de la performance.",
+      "Boire de l’eau régulièrement évite la fatigue et les crampes.",
+      "Un corps bien nourri est un corps fort."
+    ]
+  },
+
+  // --- Force & Musculation ---
+  { keywords:["force","muscle","pompes","squat","haltère","abdos","planche","endurance","biceps","triceps"],
+    reply:[
+      "Pour la force, fais 10 pompes chaque matin et respire profondément.",
+      "Les muscles se construisent avec régularité et effort progressif.",
+      "Ne néglige pas l'endurance, c'est la base de la puissance.",
+      "Travaille chaque groupe musculaire et respecte les jours de repos.",
+      "Chaque répétition compte pour ton objectif de force.",
+      "Souviens-toi : la douleur d'aujourd'hui forge la puissance de demain.",
+      "Varie les exercices pour solliciter tous les muscles.",
+      "Augmente les charges progressivement pour progresser sans blessure.",
+      "Fais toujours un échauffement avant chaque séance.",
+      "Un bon programme alterne force, endurance et récupération.",
+      "Les muscles grandissent pendant le repos, pas seulement à la salle.",
+      "L’augmentation progressive est la clé pour éviter les blessures.",
+      "Écoute ton corps et respecte ses limites.",
+      "La régularité est plus importante que l’intensité brute.",
+      "Une séance courte mais régulière vaut mieux qu’une longue rare.",
+      "Les muscles du haut et du bas du corps doivent être équilibrés.",
+      "Travaille les abdos et le tronc pour améliorer ta posture.",
+      "Les pompes et squats quotidiens construisent une base solide.",
+      "L’énergie mentale renforce la performance physique.",
+      "La constance forge la puissance et la confiance."
+    ]
+  },
+
+  // --- Cardio & Endurance ---
+  { keywords:["cardio","course","running","vélo","natation","sprint","jogging","endurance","coeur","pulse"],
+    reply:[
+      "Le cardio améliore ton endurance et brûle les calories.",
+      "Commence doucement et augmente l'intensité progressivement.",
+      "Même 15 minutes de course chaque matin boostent ton énergie.",
+      "Respire profondément et garde le rythme pour tenir longtemps.",
+      "Le HIIT augmente la puissance et la condition physique rapidement.",
+      "Alterne course et marche pour améliorer ton endurance.",
+      "L'endurance est la base de toute performance physique.",
+      "Chaque séance cardio renforce ton coeur et tes poumons.",
+      "Planifie tes sessions pour progresser chaque semaine.",
+      "Un cardio régulier augmente ton énergie quotidienne.",
+      "L’intensité compte plus que la durée parfois.",
+      "Le cardio matinal réveille le corps et l’esprit.",
+      "Varie les terrains pour stimuler tes muscles.",
+      "Le cardio en groupe peut booster la motivation.",
+      "Ne sous-estime jamais le pouvoir d’un bon jogging.",
+      "Hydrate-toi avant et après le cardio.",
+      "L’échauffement est crucial pour éviter les blessures.",
+      "L’endurance mentale est renforcée par le cardio régulier.",
+      "Les intervalles améliorent l’efficacité des séances.",
+      "Respire profondément et garde une bonne posture."
+    ]
+  },
+
+  // --- Motivation & Mental ---
+  { keywords:["motivation","inspiration","encouragement","défi","objectif","progresser","mental","positif","focus","concentration"],
+    reply:[
+      "La motivation vient après l’action. Bouge d’abord, la force viendra !",
+      "Fixe ton objectif chaque matin et avance pas à pas.",
+      "Petit à petit, tu deviendras plus fort et plus discipliné.",
+      "Ne lâche rien, chaque effort te rapproche de ton rêve.",
+      "Ton mental est ton meilleur allié, nourris-le avec des pensées positives.",
+      "Répète tes objectifs tous les matins pour rester concentré.",
+      "Chaque défi est une opportunité de grandir.",
+      "Visualise ta réussite et agis chaque jour pour l'atteindre.",
+      "La persévérance transforme l'échec en succès.",
+      "Garde une attitude positive même dans les moments difficiles.",
+      "Le succès appartient à ceux qui ne renoncent jamais.",
+      "Les pensées positives génèrent des actions puissantes.",
+      "Chaque matin est un nouveau départ pour ta motivation.",
+      "N’attends pas la motivation, crée-la avec l’action.",
+      "Les grands champions commencent par de petites victoires.",
+      "Crois en toi et avance malgré les obstacles.",
+      "Le mental domine le physique si tu le travailles.",
+      "Fixe tes priorités et ne dévie pas de ton objectif.",
+      "Les erreurs sont des leçons, pas des échecs.",
+      "Chaque action cohérente construit ta réussite."
+    ]
+  },
+
+  // --- Étirements & Mobilité ---
+  { keywords:["étirement","stretch","mobilité","souplesse","yoga","pilates","flexibility","warmup","cooldown"],
+    reply:[
+      "Étire-toi chaque matin pour éviter les blessures.",
+      "La mobilité améliore tes performances et prévient la fatigue.",
+      "Même 5 minutes d’étirement font une grande différence.",
+      "Une posture correcte protège ton dos et tes articulations.",
+      "Le yoga renforce ton corps et ton mental simultanément.",
+      "Commence par des étirements légers puis augmente l'intensité.",
+      "Évite les mouvements brusques pour préserver tes articulations.",
+      "Le stretching augmente l'amplitude de mouvement et réduit la tension.",
+      "Intègre les étirements dans ta routine quotidienne.",
+      "Respire profondément pendant chaque étirement pour relâcher les muscles.",
+      "Les mouvements dynamiques préparent le corps à l’effort.",
+      "Les étirements réguliers améliorent la posture et réduisent les douleurs.",
+      "Étire chaque muscle principal après l'effort.",
+      "La souplesse est développée progressivement et avec constance.",
+      "Un corps flexible est moins sujet aux blessures.",
+      "Le stretching améliore la circulation sanguine.",
+      "La respiration pendant l’étirement optimise la récupération.",
+      "Combine étirement et mobilité pour de meilleurs résultats.",
+      "Fais du yoga ou du Pilates pour renforcer la souplesse.",
+      "5 minutes par jour suffisent à long terme."
+    ]
+  },
+
+  // --- Respiration & Relaxation ---
+  { keywords:["respiration","air","oxygène","inspire","expire","breathing","calme","relax","méditation"],
+    reply:[
+      "Respire profondément pour mieux oxygéner tes muscles et ton cerveau.",
+      "La respiration contrôlée augmente l’endurance et réduit le stress.",
+      "Ne sous-estime jamais le pouvoir d’une bonne respiration.",
+      "5 minutes de méditation améliorent concentration et calme.",
+      "Le souffle conscient renforce le mental et le corps.",
+      "Inspire lentement et expire profondément pour relaxer.",
+      "La respiration est la base de la performance physique et mentale.",
+      "Répète des exercices respiratoires chaque matin pour plus d'énergie.",
+      "Le calme intérieur commence par la maîtrise de ta respiration.",
+      "Prends conscience de chaque inspiration et expiration pour réduire le stress.",
+      "Respire avant chaque effort pour augmenter la performance.",
+      "La respiration profonde active le système nerveux parasympathique.",
+      "Combine respiration et étirement pour plus de détente.",
+      "Respirer consciemment réduit la fatigue mentale et physique.",
+      "Le mental devient plus clair après une bonne respiration.",
+      "Les techniques de respiration augmentent la concentration.",
+      "Respire par le nez et expire par la bouche pour l’oxygénation.",
+      "Le souffle lent apaise les tensions musculaires.",
+      "La respiration régulière améliore le sommeil.",
+      "Chaque respiration consciente est un pas vers la sérénité."
+    ]
+  },
+
+  // --- Progression & Objectifs ---
+  { keywords:["progression","progrès","amélioration","performance","goal","achievement","tracking"],
+    reply:[
+      "Note tes progrès chaque semaine pour rester motivé.",
+      "Chaque petit progrès est une victoire vers ton objectif final.",
+      "La régularité est plus importante que la perfection.",
+      "Visualise ton progrès et ajuste ton plan pour aller plus loin.",
+      "Célèbre chaque petite victoire, elles construisent la grande réussite.",
+      "Utilise un journal pour suivre ton évolution.",
+      "Compare-toi uniquement à toi-même pour progresser sereinement.",
+      "Fixe des étapes réalistes et atteignables.",
+      "Mesure tes performances pour améliorer tes résultats.",
+      "Chaque effort compte, même s’il semble petit aujourd’hui.",
+      "Planifie tes objectifs et révise-les régulièrement.",
+      "Suivre tes progrès augmente la motivation.",
+      "Petit à petit, tes efforts construisent le succès.",
+      "Un objectif écrit a plus de chance d’être atteint.",
+      "Analyse tes résultats et ajuste ta stratégie.",
+      "Les progrès visibles encouragent la discipline.",
+      "Reste patient, la progression prend du temps.",
+      "Fixe des mini-objectifs pour atteindre le principal.",
+      "Chaque amélioration mérite d’être notée.",
+      "La constance crée une progression durable."
+    ]
+  },
+
+  // --- Réponse par défaut ---
+  { keywords:["*"], reply:[
+      "ChatBENGZ: Continue à bouger et rester motivé ☀️",
+      "ChatBENGZ: Chaque matin compte, ne l’oublie pas 💪",
+      "ChatBENGZ: La constance crée des champions 🏆",
+      "ChatBENGZ: Bouge maintenant, la motivation suivra.",
+      "ChatBENGZ: Un petit effort chaque jour vaut mieux qu’un grand effort occasionnel.",
+      "ChatBENGZ: Respire, concentre-toi et avance.",
+      "ChatBENGZ: Chaque action cohérente construit la réussite.",
+      "ChatBENGZ: Fixe ton objectif et ne lâche rien.",
+      "ChatBENGZ: L’important est de commencer, pas de finir vite.",
+      "ChatBENGZ: Persévère, même quand c’est difficile."
+    ]
+  }
+];
+
+// Fonction pour obtenir une réponse aléatoire
+function getRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function send(){
+  const chat = document.getElementById('chat');
+  const msg = document.getElementById('msg');
+  const text = msg.value.trim().toLowerCase();
+  if(!text) return;
+  chat.innerHTML += `<div class='message user'>${msg.value}</div>`;
+  msg.value='';
+
+  let rep = getRandom(responses[responses.length-1].reply); // par défaut
+  for(let r of responses){
+    for(let k of r.keywords){
+      if(k!=="*" && text.includes(k)){
+        rep = getRandom(r.reply);
+        break;
+      }
+    }
+  }
+
+  chat.innerHTML += `<div class='message bot'>${rep}</div>`;
+  chat.scrollTop = chat.scrollHeight;
+}
+</script>
+</body>
+</html>
